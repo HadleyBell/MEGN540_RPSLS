@@ -1,43 +1,22 @@
-"""
-Hand Tracking Module
-By: Computer Vision Zone
-Website: https://www.computervision.zone/
-"""
-
 import math
-
 import cv2
 import mediapipe as mp
 
 
+# finds hands using media pipe library
 class HandDetector:
-    """
-    Finds Hands using the mediapipe library. Exports the landmarks
-    in pixel format. Adds extra functionalities like finding how
-    many fingers are up or the distance between two fingers. Also
-    provides bounding box info of the hand found.
-    """
+    
+    # constructor
+    def __init__(self, staticMode=False, maxHands = 1):
 
-    def __init__(self, staticMode=False, maxHands=2, modelComplexity=1, detectionCon=0.5, minTrackCon=0.5):
-
-        """
-        :param mode: In static mode, detection is done on each image: slower
-        :param maxHands: Maximum number of hands to detect
-        :param modelComplexity: Complexity of the hand landmark model: 0 or 1.
-        :param detectionCon: Minimum Detection Confidence Threshold
-        :param minTrackCon: Minimum Tracking Confidence Threshold
-        """
-        self.staticMode = staticMode
+        self.staticMode = staticMode # In static mode, detection is done on each image: slower
         self.maxHands = maxHands
-        self.modelComplexity = modelComplexity
-        self.detectionCon = detectionCon
-        self.minTrackCon = minTrackCon
+  
+        
         self.mpHands = mp.solutions.hands
         self.hands = self.mpHands.Hands(static_image_mode=self.staticMode,
-                                        max_num_hands=self.maxHands,
-                                        model_complexity=modelComplexity,
-                                        min_detection_confidence=self.detectionCon,
-                                        min_tracking_confidence=self.minTrackCon)
+                                        max_num_hands=self.maxHands)
+
 
         self.mpDraw = mp.solutions.drawing_utils
         self.tipIds = [4, 8, 12, 16, 20]
@@ -45,12 +24,7 @@ class HandDetector:
         self.lmList = []
 
     def findHands(self, img, draw=True, flipType=True):
-        """
-        Finds hands in a BGR image.
-        :param img: Image to find the hands in.
-        :param draw: Flag to draw the output on the image.
-        :return: Image with or without drawings
-        """
+
         imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         self.results = self.hands.process(imgRGB)
         allHands = []
@@ -158,17 +132,17 @@ class HandDetector:
 
 
 def main():
-    # Initialize the webcam to capture video
-    # The '2' indicates the third camera connected to your computer; '0' would usually refer to the built-in camera
-    cap = cv2.VideoCapture(0)
 
-    # Initialize the HandDetector class with the given parameters
-    detector = HandDetector(staticMode=False, maxHands=2, modelComplexity=1, detectionCon=0.5, minTrackCon=0.5)
+    # 2 for external camera connected to computer, 0 built-in camera
+    cap = cv2.VideoCapture(2)
+    if not cap.isOpened():
+        print("Cannot open camera")
+        exit()
 
-    # Continuously get frames from the webcam
+    # Initialize the HandDetector class
+    detector = HandDetector(staticMode=False, maxHands=1)
+
     while True:
-        # Capture each frame from the webcam
-        # 'success' will be True if the frame is successfully captured, 'img' will contain the frame
         success, img = cap.read()
 
         # Find hands in the current frame
