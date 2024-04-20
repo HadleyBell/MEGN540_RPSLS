@@ -106,15 +106,9 @@ class HandDetector:
         return fingers
 
     def findDistance(self, p1, p2, img=None, color=(255, 0, 255), scale=5):
-        """
-        Find the distance between two landmarks input should be (x1,y1) (x2,y2)
-        :param p1: Point1 (x1,y1)
-        :param p2: Point2 (x2,y2)
-        :param img: Image to draw output on. If no image input output img is None
-        :return: Distance between the points
-                 Image with output drawn
-                 Line information
-        """
+
+        # Find the distance between two landmarks input should be p1 (x1,y1), p2 (x2,y2)
+        # returns Distance between the points, Image with output drawn
 
         x1, y1 = p1
         x2, y2 = p2
@@ -133,7 +127,7 @@ class HandDetector:
 def main():
 
     # 2 for external camera connected to computer, 0 built-in camera
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(2)
     if not cap.isOpened():
         print("Cannot open camera")
         exit()
@@ -160,17 +154,28 @@ def main():
 
             # Count the number of fingers up for the first hand
             fingers1 = detector.fingersUp(hand1)
-            print(f'H1 = {fingers1.count(1)}', end=" ")  # Print the count of fingers that are up
+            # print(f'H1 = {fingers1.count(1)}', end=" ")  # Print the count of fingers that are up
 
             # Calculate distance between specific landmarks on the first hand and draw it on the image
             length, info, img = detector.findDistance(lmList1[8][0:2], lmList1[12][0:2], img, color=(255, 0, 255),
                                                       scale=10)
+            # print('Distance: ',length, end = " ")
 
+            if fingers1.count(1) == 0:
+                print('Rock', end = " ")
+            elif (length >= 65 or fingers1.count(1) == 2):
+                print('Scissors', end = " ")
+            elif fingers1.count(1) == 4:
+                print('Paper', end = " ")
+            else:
+                print(f'H1 = {fingers1.count(1)}', end=" ")
+                
+                
             # Check if a second hand is detected
-            if len(hands) == 2:
-                # Information for the second hand
-                hand2 = hands[1]
-                lmList2 = hand2["lmList"]
+            # if len(hands) == 2:
+            #     # Information for the second hand
+            #     hand2 = hands[1]
+            #     lmList2 = hand2["lmList"]
                 # bbox2 = hand2["bbox"]
                 # center2 = hand2['center']
                 # handType2 = hand2["type"]
@@ -180,8 +185,8 @@ def main():
                 # print(f'H2 = {fingers2.count(1)}', end=" ")
 
                 # Calculate distance between the index fingers of both hands and draw it on the image
-                length, info, img = detector.findDistance(lmList1[8][0:2], lmList2[8][0:2], img, color=(255, 0, 0),
-                                                          scale=10)
+                # length, info, img = detector.findDistance(lmList1[8][0:2], lmList2[8][0:2], img, color=(255, 0, 0),
+                #                                           scale=10)
 
             print(" ")  # New line 
 
