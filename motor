@@ -1,0 +1,137 @@
+from gpiozero import OutputDevice, Motor
+import gpiozero
+from time import sleep
+
+# step angle = 1.8deg
+#
+
+# motor = Motor(forward=16, backward=27)
+
+# while True:
+#     motor.forward()
+#     sleep(5)
+
+# motor = Motor(17, 18)
+# # motor = Motor(forward=17, backward=18)
+# motor.forward()
+
+
+    
+# enable_pin = OutputDevice(8)
+coil_A_1 = OutputDevice(23)
+coil_A_2 = OutputDevice(24)
+coil_B_1 = OutputDevice(27)
+coil_B_2 = OutputDevice(22)
+
+print("im trying")
+
+# motor = Motor(forward=coil_A_1, backward=coil_A_2)
+
+# enable_pin.on()
+
+
+# def step_forward():
+#     motor.forward()
+#     sleep(0.005)
+#     motor.stop()
+
+
+# for _ in range(200):
+#     step_forward()
+
+# enable_pin.off()
+
+# def step_forward():
+#     coil_A_1.on()
+#     coil_A_2.off()
+#     coil_B_1.on()
+#     coil_B_2.off()
+#     sleep(0.005)
+
+#     coil_A_1.off()
+#     coil_A_2.on()
+#     coil_B_1.off()
+#     coil_B_2.on()
+#     sleep(0.005)
+
+#     coil_A_1.off()
+#     coil_A_2.off()
+#     coil_B_1.off()
+#     coil_B_2.off()
+
+# for _ in range(1000):
+#     step_forward()
+
+
+def step_forward():
+    coil_A_1.on()
+    coil_A_2.off()
+    coil_B_1.on()
+    coil_B_2.off()
+    sleep(0.005)
+
+    coil_A_1.off()
+    coil_A_2.on()
+    coil_B_1.on()
+    coil_B_2.off()
+    sleep(0.005)
+
+    coil_A_1.off()
+    coil_A_2.on()
+    coil_B_1.off()
+    coil_B_2.on()
+    sleep(0.005)
+
+    coil_A_1.on()
+    coil_A_2.off()
+    coil_B_1.off()
+    coil_B_2.on()
+    sleep(0.005)
+
+    coil_A_1.off()
+    coil_A_2.off()
+    coil_B_1.off()
+    coil_B_2.off()
+
+# def step_backwards():
+
+#     # step 4
+#     coil_A_1.on()
+#     coil_A_2.off()
+#     coil_B_1.off()
+#     coil_B_2.on()
+#     sleep(0.005)
+
+#     # step 3
+#     coil_A_1.off()
+#     coil_A_2.on()
+#     coil_B_1.off()
+#     coil_B_2.on()
+#     sleep(0.005)
+
+#     # step 2
+#     coil_A_1.off()
+#     coil_A_2.on()
+#     coil_B_1.on()
+#     coil_B_2.off()
+#     sleep(0.005)
+
+#     # step 1
+#     coil_A_1.on()
+#     coil_A_2.off()
+#     coil_B_1.on()
+#     coil_B_2.off()
+#     sleep(0.005)
+
+#     coil_A_1.off()
+#     coil_A_2.off()
+#     coil_B_1.off()
+#     coil_B_2.off()
+
+for _ in range(200):
+    step_forward()
+    print("im running")
+
+
+
+print("im done")

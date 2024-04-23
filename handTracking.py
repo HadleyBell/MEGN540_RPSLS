@@ -127,7 +127,7 @@ class HandDetector:
 def main():
 
     # 2 for external camera connected to computer, 0 built-in camera
-    cap = cv2.VideoCapture(2)
+    cap = cv2.VideoCapture(0)
     if not cap.isOpened():
         print("Cannot open camera")
         exit()
