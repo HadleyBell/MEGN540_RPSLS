@@ -132,11 +132,17 @@ def main():
         print("Cannot open camera")
         exit()
 
+    cap2 = cv2.VideoCapture(2)
+    if not cap2.isOpened():
+        print("Cannot open camera2")
+        exit()
+
     # Initialize the HandDetector class
     detector = HandDetector(staticMode=False, maxHands=1)
 
     while True:
         success, img = cap.read()
+        success, img = cap2.read()
 
         # Find hands in the current frame
         # The 'draw' parameter draws landmarks and hand outlines on the image if set to True
@@ -165,7 +171,7 @@ def main():
                 print('Rock', end = " ")
             elif (length >= 65 or fingers1.count(1) == 2):
                 print('Scissors', end = " ")
-            elif fingers1.count(1) == 4:
+            elif fingers1.count(1) == 4 or fingers1.count(1) == 5:
                 print('Paper', end = " ")
             else:
                 print(f'H1 = {fingers1.count(1)}', end=" ")

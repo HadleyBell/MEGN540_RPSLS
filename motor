@@ -1,137 +1,112 @@
-from gpiozero import OutputDevice, Motor
+from gpiozero import OutputDevice, Servo, Button
 import gpiozero
 from time import sleep
 
-# step angle = 1.8deg
-#
+button = Button(4)
 
-# motor = Motor(forward=16, backward=27)
+while True:
+    if button.is_pressed:
+        print("Button is pressed")
+    else:
+        print("Button is not pressed")
 
-# while True:
-#     motor.forward()
-#     sleep(5)
+# Button: Start Stop Reset
 
-# motor = Motor(17, 18)
-# # motor = Motor(forward=17, backward=18)
-# motor.forward()
-
-
+# 3, 2, 1 LED sequence
     
-# enable_pin = OutputDevice(8)
-coil_A_1 = OutputDevice(23)
-coil_A_2 = OutputDevice(24)
-coil_B_1 = OutputDevice(27)
-coil_B_2 = OutputDevice(22)
+# 3 RPS positions 
+# Home/At rest position
 
-print("im trying")
+# myGPIO_l = 16 #left
+# myGPIO_r = 12 #right
 
-# motor = Motor(forward=coil_A_1, backward=coil_A_2)
-
-# enable_pin.on()
-
-
-# def step_forward():
-#     motor.forward()
-#     sleep(0.005)
-#     motor.stop()
+# coil_A_1 = OutputDevice(23)
+# coil_A_2 = OutputDevice(24)
+# coil_B_1 = OutputDevice(27)
+# coil_B_2 = OutputDevice(22)
 
 
-# for _ in range(200):
-#     step_forward()
 
-# enable_pin.off()
+# # steps = 500 # 
+# # speed = 1 #
+# # time_delay = steps/speed
+
+# time_delay = 0.005
+
+ 
+# servo_l = Servo(myGPIO_l)
+# servo_r = Servo(myGPIO_r)
+ 
+# # while True:
+# #     servo_l.mid()
+# #     print("mid")
+# #     sleep(1)
+# #     servo_l.min()
+# #     print("min")
+# #     sleep(1)
+# #     servo_l.mid()
+# #     print("mid")
+# #     sleep(1)
+# #     servo_l.max()
+# #     print("max")
+# #     sleep(1)
+
 
 # def step_forward():
 #     coil_A_1.on()
 #     coil_A_2.off()
 #     coil_B_1.on()
 #     coil_B_2.off()
-#     sleep(0.005)
+#     sleep(time_delay)
+
+#     coil_A_1.off()
+#     coil_A_2.on()
+#     coil_B_1.on()
+#     coil_B_2.off()
+#     sleep(time_delay)
 
 #     coil_A_1.off()
 #     coil_A_2.on()
 #     coil_B_1.off()
 #     coil_B_2.on()
-#     sleep(0.005)
+#     sleep(time_delay)
 
-#     coil_A_1.off()
+#     coil_A_1.on()
 #     coil_A_2.off()
 #     coil_B_1.off()
-#     coil_B_2.off()
+#     coil_B_2.on()
+#     sleep(time_delay)
 
-# for _ in range(1000):
-#     step_forward()
-
-
-def step_forward():
-    coil_A_1.on()
-    coil_A_2.off()
-    coil_B_1.on()
-    coil_B_2.off()
-    sleep(0.005)
-
-    coil_A_1.off()
-    coil_A_2.on()
-    coil_B_1.on()
-    coil_B_2.off()
-    sleep(0.005)
-
-    coil_A_1.off()
-    coil_A_2.on()
-    coil_B_1.off()
-    coil_B_2.on()
-    sleep(0.005)
-
-    coil_A_1.on()
-    coil_A_2.off()
-    coil_B_1.off()
-    coil_B_2.on()
-    sleep(0.005)
-
-    coil_A_1.off()
-    coil_A_2.off()
-    coil_B_1.off()
-    coil_B_2.off()
+#     # coil_A_1.off()
+#     # coil_A_2.off()
+#     # coil_B_1.off()
+#     # coil_B_2.off()
 
 # def step_backwards():
 
 #     # step 4
-#     coil_A_1.on()
-#     coil_A_2.off()
-#     coil_B_1.off()
-#     coil_B_2.on()
-#     sleep(0.005)
+#     coil_A_1.on(), coil_A_2.off(), coil_B_1.off(), coil_B_2.on()
+#     sleep(time_delay)
 
 #     # step 3
-#     coil_A_1.off()
-#     coil_A_2.on()
-#     coil_B_1.off()
-#     coil_B_2.on()
-#     sleep(0.005)
+#     coil_A_1.off(), coil_A_2.on(), coil_B_1.off(), coil_B_2.on()
+#     sleep(time_delay)
 
 #     # step 2
-#     coil_A_1.off()
-#     coil_A_2.on()
-#     coil_B_1.on()
-#     coil_B_2.off()
-#     sleep(0.005)
+#     coil_A_1.off(), coil_A_2.on(), coil_B_1.on(), coil_B_2.off()
+#     sleep(time_delay)
 
 #     # step 1
-#     coil_A_1.on()
-#     coil_A_2.off()
-#     coil_B_1.on()
-#     coil_B_2.off()
-#     sleep(0.005)
+#     coil_A_1.on(), coil_A_2.off(), coil_B_1.on(), coil_B_2.off()
+#     sleep(time_delay)
 
-#     coil_A_1.off()
-#     coil_A_2.off()
-#     coil_B_1.off()
-#     coil_B_2.off()
+#     coil_A_1.off(), coil_A_2.off(), coil_B_1.off(), coil_B_2.off()
 
-for _ in range(200):
-    step_forward()
-    print("im running")
+# for _ in range(20):
+#     step_backwards()
+#     print("im running")
 
 
 
-print("im done")
+# print("im done")
+
