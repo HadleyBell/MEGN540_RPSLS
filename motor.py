@@ -30,6 +30,13 @@ button3 = Button(13) # reset
 # green = LED(11) 
 # LCD Screen
 
+# while True:
+#     button_state = button_line.get_value()
+#     if button_state ==1:
+#         print("button was pushed")
+#         mylcd.lcd_display_string("Welcome")
+        
+
 
 time_delay = 0.002
 
@@ -81,31 +88,6 @@ time_delay = 0.002
 #         sleep(1)
 
 
-# def step_forward():
-
-#     coil_A_1.on()
-#     coil_A_2.off()
-#     coil_B_1.on()
-#     coil_B_2.off()
-#     sleep(time_delay)
-
-#     coil_A_1.off()
-#     coil_A_2.on()
-#     coil_B_1.on()
-#     coil_B_2.off()
-#     sleep(time_delay)
-
-#     coil_A_1.off()
-#     coil_A_2.on()
-#     coil_B_1.off()
-#     coil_B_2.on()
-#     sleep(time_delay)
-
-#     coil_A_1.on()
-#     coil_A_2.off()
-#     coil_B_1.off()
-#     coil_B_2.on()
-#     sleep(time_delay)
 def step_forward():
 
     coil_A_1.on()
@@ -162,60 +144,22 @@ def step_backwards():
     coil_B_2.off()
     sleep(time_delay)
 
-    # coil_A_1.off()
-    # coil_A_2.off()
-    # coil_B_1.off()
-    # coil_B_2.off()
 
-def stop():
-
-    # step 4
+def hold_motor():
+# hold motor steady
     coil_A_1.on()
-    coil_A_2.off()
-    coil_B_1.off()
-    coil_B_2.on()
-    sleep(time_delay)
-
-    # step 3
-    coil_A_1.off()
-    coil_A_2.on()
-    coil_B_1.off()
-    coil_B_2.on()
-    sleep(time_delay)
-
-    # step 2
-    coil_A_1.off()
     coil_A_2.on()
     coil_B_1.on()
-    coil_B_2.off()
-    sleep(time_delay)
-
-    # step 1
-    coil_A_1.on()
-    coil_A_2.off()
-    coil_B_1.on()
-    coil_B_2.off()
-    sleep(time_delay)
-
-    # coil_A_1.off()
-    # coil_A_2.off()
-    # coil_B_1.off()
-    # coil_B_2.off()
+    coil_B_2.on()
 
 for _ in range(40):
     step_forward()
     print("im running")
-# while True:
-#     coil_A_1.on()
-#     coil_A_2.on()
-#     coil_B_1.on()
-#     coil_B_2.on()
-#     sleep(time_delay)
-#     print("still running")
+    
+hold_motor()
 
-
-# servo_cmd()
-
+while True:
+    sleep(1)
 
 
 
