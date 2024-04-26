@@ -11,13 +11,15 @@ from time import sleep
 # Pins 
 
 # Servo
-# myGPIO_l = 16 #left
-# myGPIO_r = 12 #right
+myGPIO_l = 16 #left
+myGPIO_r = 12 #right
 # Stepper
 coil_A_1 = OutputDevice(23)
 coil_A_2 = OutputDevice(24)
 coil_B_1 = OutputDevice(27)
 coil_B_2 = OutputDevice(22)
+
+
 # Limit Switch
 limit = Button(4)
 # Buttons
@@ -34,14 +36,13 @@ button3 = Button(13) # reset
 #     button_state = button_line.get_value()
 #     if button_state ==1:
 #         print("button was pushed")
-#         mylcd.lcd_display_string("Welcome")
-        
+#         mylcd.lcd_display_string("Welcome")            
 
 
-time_delay = 0.002
+time_delay = 0.005
 
-# servo_l = Servo(myGPIO_l)
-# servo_r = Servo(myGPIO_r)
+servo_l = Servo(myGPIO_l)
+servo_r = Servo(myGPIO_r)
 
 # def led_cmd():
 # # Button: Start Stop Reset
@@ -71,21 +72,21 @@ time_delay = 0.002
 #             return(false)
 
  
-# def servo_cmd():
-#     while True:
+def servo_cmd():
+    while True:
 
-#         servo_l.mid()
-#         print("mid")
-#         sleep(1)
-#         servo_l.min()
-#         print("min")
-#         sleep(1)
-#         servo_l.mid()
-#         print("mid")
-#         sleep(1)
-#         servo_l.max()
-#         print("max")
-#         sleep(1)
+        servo_l.mid()
+        print("mid")
+        sleep(1)
+        servo_l.min()
+        print("min")
+        sleep(1)
+        servo_l.mid()
+        print("mid")
+        sleep(1)
+        servo_l.max()
+        print("max")
+        sleep(1)
 
 
 def step_forward():
@@ -114,14 +115,13 @@ def step_forward():
     coil_B_2.off()
     sleep(time_delay)
 
-def step_backwards():
-
-    # step 4
-    coil_A_1.on()
+    coil_A_1.off()
     coil_A_2.off()
     coil_B_1.off()
-    coil_B_2.on()
-    sleep(time_delay)
+    coil_B_2.off()
+
+
+def step_backwards():
 
     # step 3
     coil_A_1.off()
@@ -130,11 +130,11 @@ def step_backwards():
     coil_B_2.on()
     sleep(time_delay)
 
-    # step 2
-    coil_A_1.off()
-    coil_A_2.on()
-    coil_B_1.on()
-    coil_B_2.off()
+    # step 4
+    coil_A_1.on()
+    coil_A_2.off()
+    coil_B_1.off()
+    coil_B_2.on()
     sleep(time_delay)
 
     # step 1
@@ -144,21 +144,73 @@ def step_backwards():
     coil_B_2.off()
     sleep(time_delay)
 
+    # step 2
+    coil_A_1.off()
+    coil_A_2.on()
+    coil_B_1.on()
+    coil_B_2.off()
+    sleep(time_delay)
+
+    coil_A_1.off()
+    coil_A_2.off()
+    coil_B_1.off()
+    coil_B_2.off()
+
+
+# def step_backwards():
+
+#     coil_A_1.off()
+#     coil_A_2.on()
+#     coil_B_1.off()
+#     coil_B_2.on()
+#     sleep(time_delay)
+
+#     coil_A_1.off()
+#     coil_A_2.on()
+#     coil_B_1.on()
+#     coil_B_2.off()
+#     sleep(time_delay)
+
+#     coil_A_1.on()
+#     coil_A_2.off()
+#     coil_B_1.on()
+#     coil_B_2.off()
+#     sleep(time_delay)
+
+#     coil_A_1.on()
+#     coil_A_2.off()
+#     coil_B_1.off()
+#     coil_B_2.on()
+#     sleep(time_delay)
+
+#     coil_A_1.off()
+#     coil_A_2.off()
+#     coil_B_1.off()
+#     coil_B_2.off()
+
 
 def hold_motor():
 # hold motor steady
     coil_A_1.on()
-    coil_A_2.on()
+    coil_A_2.off()
     coil_B_1.on()
-    coil_B_2.on()
+    coil_B_2.off()
 
-for _ in range(40):
+for _ in range(10):
+    step_backwards()
+    print("im running backwards")
+
+    # if limit.is_pressed:
+        
+sleep(1)
+for _ in range(10):
     step_forward()
-    print("im running")
-    
-hold_motor()
+    print("im running forwards")
+sleep(1)   
 
 while True:
+    hold_motor()
+    servo_cmd()
     sleep(1)
 
 

@@ -115,27 +115,28 @@ class ButtonController:
         for button in self.buttons:
             button.wait_for_press()
             
-# class LCDController:
-#     def __init__(self, pins):
         
 
 # Instantiate component controllers
 servo_l = ServoController(16)
 servo_r = ServoController(12)
-stepper_motor = StepperMotorController(stepper_motor_pins)
+stepper_motor= StepperMotorController(stepper_motor_pins)
+
 leds = LEDController([5, 6, 13])
 buttons = ButtonController([19, 20])
 
 # Main control program
 try:
     while True:
-        # Example control logic
-        servo_l.set_position(0)
-        servo_r.set_position(1)
-        stepper_motor.move_forward()
-        leds.turn_on(0)
-        buttons.wait_for_press()
-        leds.turn_off(0)
+
+        # servo_l.set_position(0)
+        # servo_r.set_position(1)
+        stepper_motor.step_forward()
+        # sleep(1)
+        # stepper_motor_b.step_forward()
+        # leds.turn_on(0)
+        # buttons.wait_for_press()
+        # leds.turn_off(0)
 except KeyboardInterrupt:
     pass
 
