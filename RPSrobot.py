@@ -98,14 +98,16 @@ class StepperMotorController:
 
 
 class LEDController:
-    def __init__(self, pins):
-        self.leds = [LED(pin) for pin in pins]
+    def __init__(self, pin_mapping):
+        self.leds = {color: LED(pin) for color, pin in pin_mapping.items()}
 
-    def turn_on(self, index):
-        self.leds[index].on()
+    def turn_on(self, color):
+        if color in self.leds:
+            self.leds[color].on()
 
-    def turn_off(self, index):
-        self.leds[index].off()
+    def turn_off(self, color):
+        if color in self.leds:
+            self.leds[color].off()
 
 class ButtonController:
     def __init__(self, pins):
@@ -122,8 +124,14 @@ servo_l = ServoController(16)
 servo_r = ServoController(12)
 stepper_motor= StepperMotorController(stepper_motor_pins)
 
-leds = LEDController([5, 6, 13])
-buttons = ButtonController([19, 20])
+leds = LEDController([10, 9, 11])
+# Define the pin mappings for each LED color
+led_pin_mapping = {
+    "green": 10,
+    "amber": 9,
+    "red": 11
+}
+buttons = ButtonController([4, 5, 6, 13])
 
 # Main control program
 try:
@@ -131,12 +139,15 @@ try:
 
         # servo_l.set_position(0)
         # servo_r.set_position(1)
-        stepper_motor.step_forward()
+        
+        for _ in range(10):
+            stepper_motor.step_forward()
+            
         # sleep(1)
         # stepper_motor_b.step_forward()
-        # leds.turn_on(0)
-        # buttons.wait_for_press()
-        # leds.turn_off(0)
+        leds.turn_on("green")
+        buttons.wait_for_press()
+        leds.turn_off(0)
 except KeyboardInterrupt:
     pass
 
