@@ -27,6 +27,9 @@ class ServoController:
     def set_position(self, position):
         self.servo.value = position
 
+    def hold_position(self):
+        self.servo.detach()
+
 class StepperMotorController:
     def __init__(self, pins, time_delay=0.005):
         self.coil_A_1 = OutputDevice(pins[0])
@@ -98,8 +101,8 @@ class StepperMotorController:
 
 
 class LEDController:
-    def __init__(self, pin_mapping):
-        self.leds = {color: LED(pin) for color, pin in pin_mapping.items()}
+    def __init__(self, led_pin_mapping):
+        self.leds = {color: LED(pin) for color, pin in led_pin_mapping.items()}
 
     def turn_on(self, color):
         if color in self.leds:
@@ -110,8 +113,8 @@ class LEDController:
             self.leds[color].off()
 
 class ButtonController:
-    def __init__(self, pin_mapping):
-        self.buttons = {action: Button(pin) for action, pin in pin_mapping.items()}
+    def __init__(self, button_pin_mapping):
+        self.buttons = {action: Button(pin) for action, pin in button_pin_mapping.items()}
 
     def wait_for_press(self, action):
         if action in self.buttons:
@@ -123,14 +126,14 @@ servo_l = ServoController(16)
 servo_r = ServoController(12)
 stepper_motor= StepperMotorController(stepper_motor_pins)
 
-leds = LEDController([10, 9, 11])
+# leds = LEDController([10, 9, 11])
 # Define the pin mappings for each LED color
 led_pin_mapping = {
     "green": 10,
     "amber": 9,
     "red": 11
 }
-buttons = ButtonController([4, 5, 6, 13])
+# buttons = ButtonController([4, 5, 6, 13])
 button_pin_mapping = {
     "limit": 4,
     "start": 5,
@@ -144,24 +147,41 @@ led_controller = LEDController(led_pin_mapping)
 # Create an instance of the ButtonController class
 button_controller = ButtonController(button_pin_mapping)
 
+
 # Main control program
-try:
-    while True:
+
+servo_l.set_position(1)
+# servo_r.set_position(i)
+sleep(1)
+print("position set")
+
+servo_l.hold_position()
+sleep(1)
+servo_l.set_position(0)
+sleep(1)
+print("position 2 set")
+servo_l.hold_position()
+sleep(1)
+
+
+
+# try:
+#     while True:
         
-        button_controller.wait_for_press("start")
-        # servo_l.set_position(0)
-        # servo_r.set_position(1)
+#         # button_controller.wait_for_press("start")
         
-        for _ in range(10):
-            stepper_motor.step_forward()
+
+        
+#         # for _ in range(10):
+#         #     stepper_motor.step_forward()
             
-        # sleep(1)
-        # stepper_motor_b.step_forward()
-        led_controller.turn_on("green")
-        buttons.wait_for_press("limit")
-        led_controller.turn_off("green")
-except KeyboardInterrupt:
-    pass
+#         # sleep(1)
+#         # stepper_motor_b.step_forward()
+#         # led_controller.turn_on("green")
+#         # buttons.wait_for_press("limit")
+#         # led_controller.turn_off("green")
+# except KeyboardInterrupt:
+#     pass
 
     
     
