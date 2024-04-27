@@ -110,13 +110,12 @@ class LEDController:
             self.leds[color].off()
 
 class ButtonController:
-    def __init__(self, pins):
-        self.buttons = [Button(pin) for pin in pins]
+    def __init__(self, pin_mapping):
+        self.buttons = {action: Button(pin) for action, pin in pin_mapping.items()}
 
-    def wait_for_press(self):
-        for button in self.buttons:
-            button.wait_for_press()
-            
+    def wait_for_press(self, action):
+        if action in self.buttons:
+            self.buttons[action].wait_for_press()
         
 
 # Instantiate component controllers
@@ -132,11 +131,24 @@ led_pin_mapping = {
     "red": 11
 }
 buttons = ButtonController([4, 5, 6, 13])
+button_pin_mapping = {
+    "limit": 4,
+    "start": 5,
+    "stop": 6,
+    "reset": 13
+}
+
+# Create an instance of the LEDController class
+led_controller = LEDController(led_pin_mapping)
+
+# Create an instance of the ButtonController class
+button_controller = ButtonController(button_pin_mapping)
 
 # Main control program
 try:
     while True:
-
+        
+        button_controller.wait_for_press("start")
         # servo_l.set_position(0)
         # servo_r.set_position(1)
         
@@ -145,9 +157,9 @@ try:
             
         # sleep(1)
         # stepper_motor_b.step_forward()
-        leds.turn_on("green")
-        buttons.wait_for_press()
-        leds.turn_off(0)
+        led_controller.turn_on("green")
+        buttons.wait_for_press("limit")
+        led_controller.turn_off("green")
 except KeyboardInterrupt:
     pass
 
