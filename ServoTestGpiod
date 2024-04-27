@@ -1,0 +1,7 @@
+import gpiod
+
+# GPIO pin definitions
+SERVO_LEFT = 32
+SERVO_RIGHT = 36
+
+chip = gpiod.Chip('gpiochip4')

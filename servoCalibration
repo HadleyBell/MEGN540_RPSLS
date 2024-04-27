@@ -1,0 +1,49 @@
+from gpiozero import OutputDevice, Servo, Button, Device
+import gpiozero
+#from gpiozero.pins.pigpio import PiGPIOFactory
+
+
+#Device.pin_factory = PiGPIOFactory()
+
+from time import sleep
+
+
+# Servo
+myGPIO_l = 16 #left
+myGPIO_r = 12 #right
+
+servo_l = Servo(myGPIO_l)
+servo_r = Servo(myGPIO_r)
+
+servo_l.frame_width
+
+def servo_rock():
+    for _ in range(50):
+        servo_l.value = .19
+        print(servo_l._get_value())
+        print(servo_r._get_value())
+        sleep(0.02)
+       # servo_r.value = -1
+
+def servo_paper():
+    while True:
+
+        servo_l.mid()
+        servo_r.mid()
+
+def servo_scissor():
+    servo_l.mid()
+    servo_r.mid()
+
+def servo_off():
+    
+   # for _ in range(10000):
+    while True:
+        servo_l.detach()
+        servo_r.detach()
+
+
+#servo_rock()
+
+
+servo_rock()
