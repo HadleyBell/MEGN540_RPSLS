@@ -1,0 +1,13 @@
+import random
+
+count95 = 0
+count5 = 0
+k = 0
+while True:
+    num  = random.gauss(0,1)
+    if num > -1.96 and num < 1.96:
+        count95 = count95 +1
+    else:
+        count5 = count5 +1
+    k = k+1
+    print("number in 95 %d", count95/k, "number in 5" , count5/k)    

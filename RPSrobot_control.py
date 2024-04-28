@@ -203,8 +203,42 @@ def throw():
     time.sleep(.1)
     return(throw)
 
+def fist_bump():
+    # Set score to zero for human and bot
+    mylcd.lcd_clear()
+    mylcd.lcd_display_string("Fist Bump",1,1)
+    mylcd.lcd_display_string("Bro",2,6)
+    sleep(0.1)
+    servo.set_position("X")
+    sleep(0.5)
+
+    for _ in range(5):
+        stepper_motor.step_backwards()
+        
+    sleep(.25)
+    limit_state = limit.get_value()
+    while limit_state == 1:
+        stepper_motor.step_forward()
+        limit_state = limit.get_value()
+    for _ in range(60):
+        stepper_motor.step_backwards()
+    stepper_motor.hold_motor()
+    servo.set_position("R")
+    sleep(.5)
+    for _ in range(40):
+        stepper_motor.step_forward()
+    sleep(.15)
+    servo.set_position("X")
+    for _ in range(40):
+        stepper_motor.step_backwards()
+    sleep(.15)
+    
+    reset_pos()
+
+
 def throw_hard():
     global cap
+    win_chance = random.gauss(0, 1)
     k = 0
     ylw_LED.set_value(0)
     ready_throw()
@@ -224,7 +258,11 @@ def throw_hard():
             mylcd.lcd_display_string("SHOOT!",1, 5)
         k = k+1
     player = get_hand_position(cap) 
-    throw = winning_throw(player)
+    if win_chance <= 1.3 and win_chance >= -1.3:  # 80% chance winning (-1.96-1.96 = 95% chance winning)
+        throw = winning_throw(player)
+    else:
+        throw = losing_throw(player)
+
     ylw_LED.set_value(0)
     red_LED.set_value(1)
     time.sleep(0.1)
@@ -244,7 +282,17 @@ def winning_throw(player):
             robot = "U"
     return(robot)    
 
-
+def losing_throw(player):
+    match player:
+        case "P":
+            robot = "R"
+        case "S":
+            robot = "P"
+        case "R":
+            robot = "S"
+        case _:
+            robot = "U"
+    return(robot)
 
 def reset_pos():
     # servo.set_position("P")
@@ -287,7 +335,20 @@ def get_results(player,robot):
         mylcd.lcd_display_string("Play Again?",2,4)
         sleep(3)
 
-   
+def demo_hand():
+    red_LED.set_value(1)
+    servo.set_position("R")
+    time.sleep(1.25)
+    red_LED.set_value(0)
+    ylw_LED.set_value(1)
+    servo.set_position("P")
+    time.sleep(1.25)
+    ylw_LED.set_value(0)
+    grn_LED.set_value(1)
+    servo.set_position("S")
+    time.sleep(1.25)
+    servo.set_position("X")
+    grn_LED.set_value(0)
 
 # Main control program
 
@@ -339,6 +400,7 @@ detector = HandDetector(staticMode=False, maxHands=1)
 
 i = 0
 hard_mode = False
+sub_menu = 0
 
 try:
    while True:
@@ -384,23 +446,24 @@ try:
                     mylcd.lcd_display_string("Game Mode:",1,3)
                     hard_mode = not hard_mode
                 if grn_button_state == 1:
-                    mylcd.lcd_clear()
-                    mylcd.lcd_display_string("Game Mode:",1,3)
-                    mylcd.lcd_display_string("Demo",2,6)
-                    servo.set_position("R")
-                    red_LED.set_value(1)
-                    time.sleep(1.25)
-                    red_LED.set_value(0)
-                    ylw_LED.set_value(1)
-                    servo.set_position("P")
-                    time.sleep(1.25)
-                    ylw_LED.set_value(0)
-                    grn_LED.set_value(1)
-                    servo.set_position("S")
-                    time.sleep(1.25)
-                    servo.set_position("X")
-                    grn_LED.set_value(0)
 
+                    mylcd.lcd_clear()
+                    if sub_menu == 0:
+                        mylcd.lcd_display_string("Game Mode:",1,3)
+                        mylcd.lcd_display_string("Demo",2,6)
+                        time.sleep(.5)
+                        demo_hand()
+                    elif sub_menu == 1:
+                        mylcd.lcd_display_string("Game Mode:",1,3)
+                        mylcd.lcd_display_string("Fist Bump",2,6)
+                        time.sleep(.5)
+                        fist_bump()
+                        mylcd.lcd_clear()
+                        mylcd.lcd_display_string("Game Mode:",1,3)
+                    if sub_menu < 2:
+                        sub_menu  = sub_menu+1
+                    elif sub_menu >=2:
+                        sub_menu = 0
             mylcd.lcd_clear()
 
        elif grn_button_state == 1:
