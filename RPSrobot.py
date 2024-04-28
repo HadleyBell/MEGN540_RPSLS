@@ -1,19 +1,8 @@
 from gpiozero import Servo, Motor, LED, Button, OutputDevice
 from time import sleep
 
-class ServoController:
-    def __init__(self, pin):
-        self.servo = Servo(pin)
-
-    def set_position(self, position):
-        self.servo.value = position
-
-    def hold_position(self):
-        self.servo.detach()
-
-
 class StepperMotorController:
-    def __init__(self, pins, time_delay=0.005):
+    def __init__(self, pins, time_delay=0.007):
         self.coil_A_1 = OutputDevice(pins[0])
         self.coil_A_2 = OutputDevice(pins[1])
         self.coil_B_1 = OutputDevice(pins[2])
@@ -45,6 +34,7 @@ class StepperMotorController:
         self.coil_B_2.off()
         sleep(self.time_delay)
 
+
     def step_backwards(self):
         
         # step 3
@@ -74,6 +64,12 @@ class StepperMotorController:
         self.coil_B_1.on()
         self.coil_B_2.off()
         sleep(self.time_delay)
+
+    def stop_motor(self):
+        self.coil_A_1.off()
+        self.coil_A_2.off()
+        self.coil_B_1.off()
+        self.coil_B_2.off()
 
     def hold_motor(self):
         # Hold motor steady
@@ -126,12 +122,24 @@ class LEDController:
             self.leds[color].off()
 
 class ButtonController:
-    def __init__(self, button_pin_mapping):
-        self.buttons = {action: Button(pin) for action, pin in button_pin_mapping.items()}
+    def __init__(self, pins):
+        self.limit = Button(pins[0])
+        self.start = Button(pins[1])
+        self.stop = Button(pins[2])
+        self.reset = Button(pins[3])
+
+    # self.buttons = {action: Button(pin) for action, pin in button_pin_mapping.items()}
+    # buttons = ButtonController([4, 5, 6, 13])
+    # button_pin_mapping = {
+    #     "limit": 4,
+    #     "start": 19,
+    #     "stop": 26,
+    #     "reset": 13
+    # }
 
     def wait_for_press(self, action):
-        if action in self.buttons:
-            self.buttons[action].wait_for_press()
+        self.buttons = {"limit": 4,"start": 19,"stop": 26,"reset": 13}
+        self.buttons[action].is_pressed()
             
 
 
