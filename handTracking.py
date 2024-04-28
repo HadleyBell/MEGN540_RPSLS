@@ -132,17 +132,11 @@ def main():
         print("Cannot open camera")
         exit()
 
-    cap2 = cv2.VideoCapture(2)
-    if not cap2.isOpened():
-        print("Cannot open camera2")
-        exit()
-
     # Initialize the HandDetector class
     detector = HandDetector(staticMode=False, maxHands=1)
 
     while True:
         success, img = cap.read()
-        success, img = cap2.read()
 
         # Find hands in the current frame
         # The 'draw' parameter draws landmarks and hand outlines on the image if set to True

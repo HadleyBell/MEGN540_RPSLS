@@ -19,14 +19,14 @@ class ServoSerial:
         if self.serial_port.isOpen():
             self.serial_port.write(position.encode())
 
-    def demo(self):
-        self.set_position("R")
-        time.sleep(1.25)
-        self.set_position("P")
-        time.sleep(1.25)
-        self.set_position("S")
-        time.sleep(1.25)
-        self.set_position("X")
+    # def demo(self):
+    #     self.set_position("R")
+    #     time.sleep(1.25)
+    #     self.set_position("P")
+    #     time.sleep(1.25)
+    #     self.set_position("S")
+    #     time.sleep(1.25)
+    #     self.set_position("X")
 
 
 
