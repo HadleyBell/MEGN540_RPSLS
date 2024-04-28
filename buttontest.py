@@ -45,7 +45,7 @@ try:
        elif grn_button_state == 1:
         print ("Green button was pushed")
         red_LED.set_value(1)
-       elif limit_state == 0:
+       elif limit_state == 1:
         print ("LIMIT REACHED!!")
         red_LED.set_value(1)
        else:

@@ -34,6 +34,11 @@ class StepperMotorController:
         self.coil_B_2.off()
         sleep(self.time_delay)
 
+        self.coil_A_1.off()
+        self.coil_A_2.off()
+        self.coil_B_1.off()
+        self.coil_B_2.off()
+
 
     def step_backwards(self):
         
@@ -64,6 +69,11 @@ class StepperMotorController:
         self.coil_B_1.on()
         self.coil_B_2.off()
         sleep(self.time_delay)
+
+        self.coil_A_1.off()
+        self.coil_A_2.off()
+        self.coil_B_1.off()
+        self.coil_B_2.off()
 
     def stop_motor(self):
         self.coil_A_1.off()

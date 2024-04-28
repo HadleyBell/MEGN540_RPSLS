@@ -12,7 +12,7 @@ import math
 import cv2
 import mediapipe as mp
 import random
-#import I2C_LCD_driver
+import I2C_LCD_driver
 
 # While stop button is not pressed 
     # When start button is pressed
@@ -89,17 +89,20 @@ servo = ServoSerial()
 
 # lcd = LCD(rs=17, enable=18, d4=2, d5=3, d6=24, d7=25)  # Assign GPIO 2 to D4 and GPIO 3 to D5
 
+mylcd = I2C_LCD_driver.lcd()
 
 
 def random_char():
    char_list = ["R", "P", "S"]
    return random.choice(char_list)
-   
+
+human_score = 0
+bot_score = 0   
 
 def start_game():
     # Set score to zero for human and bot
-    human_score = 0
-    bot_score = 0
+    mylcd.lcd_clear()
+    mylcd.lcd_display_string("Get Ready!",1,4)
     sleep(0.1)
     servo.set_position("X")
     sleep(0.5)
@@ -149,19 +152,20 @@ def get_hand_position(cap):
             length, info, img = detector.findDistance(lmList1[8][0:2], lmList1[12][0:2], img, color=(255, 0, 255),scale=10)
 
             if fingers1.count(1) == 0:
-                signal = "rock"
+                signal = "R"
                 print('Rock', end = " ")
             elif (length >= 65 or fingers1.count(1) == 2):
-                signal = "scissors"
+                signal = "S"
                 print('Scissors', end = " ")
             elif fingers1.count(1) == 4 or fingers1.count(1) == 5:
                 print('Paper', end = " ")
-                signal = "paper"
-            else:
-                print(f'H1 = {fingers1.count(1)}', end=" ")
-                signal = "unknown"
-            
-        return(signal)
+                signal = "P"
+            # else:
+            #     print(f'H1 = {fingers1.count(1)}', end=" ")
+            #     signal = "U"
+        else:
+            signal = "U"
+    return(signal)
 
 def throw():
     # servo.set_position("P")
@@ -175,8 +179,38 @@ def throw():
     
     throw = random_char()
     print(throw)
+    time.sleep(0.1)
     servo.set_position(throw)
-    time.sleep(2)
+    time.sleep(.1)
+    return(throw)
+
+def get_results(player,robot):
+    global human_score
+    global bot_score
+    if player == "R" and robot == "S":
+        human_score = human_score +1
+        mylcd.lcd_display_string("You Win!",1,4)
+    elif player == "R" and robot == "P":
+        bot_score = bot_score +1
+        mylcd.lcd_display_string("I Win!",1,4)
+    elif player == "P" and robot == "S":
+        bot_score = bot_score +1
+        mylcd.lcd_display_string("I Win!",1,4)
+    elif player == "P" and robot == "R":
+        human_score = human_score +1
+        mylcd.lcd_display_string("You Win!",1,4)
+    elif player == "S" and robot == "R":
+        bot_score = bot_score +1
+        mylcd.lcd_display_string("I Win!",1,4)
+    elif player == "S" and robot == "P":
+        human_score = human_score +1
+        mylcd.lcd_display_string("You Win!",1,4)
+    else:
+        mylcd.lcd_clear
+        mylcd.lcd_display_string("Tie!",1,4)
+        mylcd.lcd_display_string("Play Again",2,4)
+        sleep(3)
+
    
 
 # Main control program
@@ -223,28 +257,47 @@ if not cap.isOpened():
     print("Cannot open camera")
     exit()
 
+i = 0
 
 
 try:
    while True:
+
+       if i <25:
+        mylcd.lcd_display_string("Welcome",1,4)
+        mylcd.lcd_display_string("Want to play?",2,2)
+        i = i+1
+       elif i>=25 and i<50:
+        mylcd.lcd_display_string("Human: %d" %human_score,1,4)
+        mylcd.lcd_display_string("     Bot: %d     " %bot_score,2,1)
+        i = i+1
+       elif i>=50:
+           i = 0
+           mylcd.lcd_clear()
+           mylcd.lcd_clear()
+       #sleep(0.4)
        blk_button_state = blk_button.get_value()
        red_button_state = red_button.get_value()
        grn_button_state = grn_button.get_value()
        limit_state = limit.get_value()
        
        if blk_button_state == 1:
-        print("Black button was pushed")
+        human_score =0
+        bot_score = 0
         grn_LED.set_value(1)
        elif red_button_state == 1:
+            servo.set_position("R")
+            time.sleep(1.25)
             servo.set_position("P")
             time.sleep(1.25)
             servo.set_position("S")
-            time.sleep(1.25)
-            servo.set_position("R")
             ylw_LED.set_value(1)
        elif grn_button_state == 1:
             start_game()
-            throw()
+            player = throw()
+            grn_LED.set_value(1)
+            robot = get_hand_position(cap)
+            get_results(player,robot)
        elif limit_state == 1:
         print ("LIMIT REACHED!!")
         red_LED.set_value(1)
