@@ -170,18 +170,31 @@ def get_hand_position(cap):
             signal = "U"
     return(signal)
 
-def throw():
+def ready_throw():
+    for _ in range(20):
+        stepper_motor.step_forward()
+    # time.sleep(.05)
+    for _ in range(20):
+        stepper_motor.step_backwards()
 
-    grn_LED.set_value(1)
+def throw():
     k = 0
+    ylw_LED.set_value(0)
+    ready_throw()
+    mylcd.lcd_clear()
+    mylcd.lcd_display_string("ROCK",1,6)
+    ready_throw()
+    mylcd.lcd_clear()
+    mylcd.lcd_display_string("PAPER",1,5)
+    ready_throw()
+    mylcd.lcd_clear()
+    mylcd.lcd_display_string("SCISSORS",1,4)
     for _ in range(45):
         stepper_motor.step_forward()
-        if k == 25:
-            grn_LED.set_value(0)
-            ylw_LED.set_value(1)
+        if k == 40:
+            mylcd.lcd_clear()
+            mylcd.lcd_display_string("SHOOT!",1, 5)
         k = k+1
-    
-    
     throw = random_char()
     ylw_LED.set_value(0)
     red_LED.set_value(1)
@@ -189,6 +202,49 @@ def throw():
     servo.set_position(throw)
     time.sleep(.1)
     return(throw)
+
+def throw_hard():
+    global cap
+    k = 0
+    ylw_LED.set_value(0)
+    ready_throw()
+    mylcd.lcd_clear()
+    mylcd.lcd_display_string("ROCK",1,6)
+    ready_throw()
+    mylcd.lcd_clear()
+    mylcd.lcd_display_string("PAPER",1,5)
+    ready_throw()
+    mylcd.lcd_clear()
+    mylcd.lcd_display_string("SCISSORS",1,4)
+    for _ in range(45):
+        stepper_motor.step_forward()
+        
+        if k == 40:
+            mylcd.lcd_clear()
+            mylcd.lcd_display_string("SHOOT!",1, 5)
+        k = k+1
+    player = get_hand_position(cap) 
+    throw = winning_throw(player)
+    ylw_LED.set_value(0)
+    red_LED.set_value(1)
+    time.sleep(0.1)
+    servo.set_position(throw)
+    time.sleep(.1)
+    return(throw)
+
+def winning_throw(player):
+    match player:
+        case "R":
+            robot = "P"
+        case "P":
+            robot = "S"
+        case "S":
+            robot = "R"
+        case _:
+            robot = "U"
+    return(robot)    
+
+
 
 def reset_pos():
     # servo.set_position("P")
@@ -282,7 +338,7 @@ if not cap.isOpened():
 detector = HandDetector(staticMode=False, maxHands=1)
 
 i = 0
-
+hard_mode = False
 
 try:
    while True:
@@ -312,16 +368,48 @@ try:
         servo.set_position("X")
         reset_pos()
        elif red_button_state == 1:
-            servo.set_position("R")
-            time.sleep(1.25)
-            servo.set_position("P")
-            time.sleep(1.25)
-            servo.set_position("S")
-            ylw_LED.set_value(1)
+            mylcd.lcd_clear()
+            mylcd.lcd_display_string("Game Mode:",1,3)
+            while blk_button_state == 0:
+                if not hard_mode:
+                    mylcd.lcd_display_string("Normal",2,5)
+                elif hard_mode:
+                    mylcd.lcd_display_string("Hard",2,6)
+                blk_button_state = blk_button.get_value()
+                red_button_state = red_button.get_value()
+                grn_button_state = grn_button.get_value()
+                if red_button_state == 1:
+                    time.sleep(.1)
+                    mylcd.lcd_clear()
+                    mylcd.lcd_display_string("Game Mode:",1,3)
+                    hard_mode = not hard_mode
+                if grn_button_state == 1:
+                    mylcd.lcd_clear()
+                    mylcd.lcd_display_string("Game Mode:",1,3)
+                    mylcd.lcd_display_string("Demo",2,6)
+                    servo.set_position("R")
+                    red_LED.set_value(1)
+                    time.sleep(1.25)
+                    red_LED.set_value(0)
+                    ylw_LED.set_value(1)
+                    servo.set_position("P")
+                    time.sleep(1.25)
+                    ylw_LED.set_value(0)
+                    grn_LED.set_value(1)
+                    servo.set_position("S")
+                    time.sleep(1.25)
+                    servo.set_position("X")
+                    grn_LED.set_value(0)
+
+            mylcd.lcd_clear()
+
        elif grn_button_state == 1:
             grn_LED.set_value(1)
             start_game()
-            robot = throw()
+            if hard_mode:
+                robot = throw_hard()
+            else:
+                robot = throw()
             #grn_LED.set_value(1)
             player = get_hand_position(cap)
             print("Player was: ",player,",Robot was: ",robot)
