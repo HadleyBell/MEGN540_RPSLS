@@ -1,17 +1,11 @@
 from gpiozero import Button
 from time import sleep
-from time import process_time
-from RPSrobot import LEDController  
-from RPSrobot import ButtonController 
-from RPSrobot import LCD
 from RPSrobot import StepperMotorController
 from handTracking import HandDetector
 from ServoSerialTest import ServoSerial
 import serial, time
 import gpiod
-import math
 import cv2
-import mediapipe as mp
 import random
 import I2C_LCD_driver
 
@@ -79,7 +73,6 @@ stepper_motor= StepperMotorController(stepper_motor_pins)
 #     "red": 11
 # }
 
-
 # # Create an instance of the LEDController class
 # led_controller = LEDController(led_pin_mapping)
 
@@ -87,8 +80,6 @@ stepper_motor= StepperMotorController(stepper_motor_pins)
 # button_controller = ButtonController()
 
 servo = ServoSerial()
-
-# lcd = LCD(rs=17, enable=18, d4=2, d5=3, d6=24, d7=25)  # Assign GPIO 2 to D4 and GPIO 3 to D5
 
 mylcd = I2C_LCD_driver.lcd()
 
@@ -121,15 +112,10 @@ def start_game():
     stepper_motor.hold_motor()
     sleep(2)
         
-    # lcd.clear()
-    # lcd.write_message("Let's play")
 
 def get_hand_position(cap):
-    # 2 for external camera connected to computer, 0 built-in camera
-
     # Initialize the HandDetector class
     #detector = HandDetector(staticMode=False, maxHands=1)
-
     for _ in range(10):
         success, img = cap.read()
 
@@ -163,10 +149,9 @@ def get_hand_position(cap):
             elif fingers1.count(1) == 4 or fingers1.count(1) == 5:
                 print('Paper', end = " ")
                 signal = "P"
-            # else:
-            #     print(f'H1 = {fingers1.count(1)}', end=" ")
-            #     signal = "U"
+
         else:
+            # print('Unknown', end = " ")
             signal = "U"
     return(signal)
 
@@ -295,12 +280,6 @@ def losing_throw(player):
     return(robot)
 
 def reset_pos():
-    # servo.set_position("P")
-    # time.sleep(1.25)
-    # servo.set_position("S")
-    # time.sleep(1.25)
-    # servo.set_position("X")
-
     limit_state = limit.get_value()
     while limit_state == 1:
         stepper_motor.step_forward()
@@ -361,36 +340,8 @@ def demo_hand():
 #     elif button_controller.buttons["reset"].is_pressed:
 #         start_game()
 
-# while True:
-#     # not button_controller.buttons["stop"].is_pressed:
-#     if grn_button_state == 1:
-#         print("button pressed")
-#         start_game()
-#         print("started")
-#     elif button_controller.buttons["reset"].is_pressed:
-#         start_game()
 
-
-# for _ in range(10):
-#     stepper_motor.step_forward()
-
-# try:
-#     while True:
-        
-#         # button_controller.wait_for_press("start")
-        
-
-            
-#         # sleep(1)
-#         # stepper_motor_b.step_forward()
-#         # led_controller.turn_on("green")
-#         # buttons.wait_for_press("limit")
-#         # led_controller.turn_off("green")
-# except KeyboardInterrupt:
-#     pass
-
-##INIT STUFF
-
+# 2 for external camera connected to computer, 0 built-in camera
 cap = cv2.VideoCapture(0)
 if not cap.isOpened():
     print("Cannot open camera")
@@ -489,31 +440,3 @@ finally:
     blk_button.release()
     red_button.release()
     grn_button.release()
-
-
-# try:
-#     while True:
-#         blk_button_state = blk_button.get_value()
-#         red_button_state = red_button.get_value()
-#         grn_button_state = grn_button.get_value()
-#         limit_state = limit.get_value()
-       
-#         if blk_button_state == 1:
-#             hand = get_hand_position(cap)
-#             print(hand)
-        
-#         elif red_button_state == 1:
-#             servo.set_position("P")
-#             time.sleep(1.25)
-#             servo.set_position("S")
-#             time.sleep(1.25)
-#             servo.set_position("X")
-#             ylw_LED.set_value(1)
-#         elif grn_button_state == 1:
-#             start_game()
-#             throw()
-#         elif limit_state == 1:
-# finally:
-#  blk_button.release()
-#  red_button.release()
-#  grn_button.release()
